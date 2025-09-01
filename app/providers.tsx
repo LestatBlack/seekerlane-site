@@ -4,10 +4,9 @@ import Lenis from "@studio-freight/lenis";
 
 export default function Providers({ children }: { children: ReactNode }) {
   useEffect(() => {
-    // Minimal, type-safe options for Lenis v1
     const lenis = new Lenis({
       duration: 1.1,
-      easing: (t: number) => 1 - Math.pow(1 - t, 2), // easeOutQuad
+      easing: (t: number) => 1 - Math.pow(1 - t, 2),
       smoothWheel: true,
     });
 
@@ -20,8 +19,7 @@ export default function Providers({ children }: { children: ReactNode }) {
 
     return () => {
       cancelAnimationFrame(rafId);
-      // @ts-expect-error destroy may not be typed in some builds
-      lenis.destroy?.();
+      lenis.destroy();
     };
   }, []);
 
