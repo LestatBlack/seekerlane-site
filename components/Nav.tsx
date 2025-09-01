@@ -1,13 +1,13 @@
 export default function Nav() {
   return (
-    <header style={{ padding: '16px 24px', borderBottom: '1px solid #eee' }}>
-      <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', justifyContent: 'space-between' }}>
-        <a href="/">SeekerLane</a>
-        <nav style={{ display: 'flex', gap: 16 }}>
-          <a href="/about">About</a>
-          <a href="/services">Services</a>
-          <a href="/jobs">Jobs</a>
-          <a href="/contact">Contact</a>
+    <header className="border-b border-slate-200">
+      <div className="container flex items-center justify-between py-4">
+        <a href="/" className="text-2xl font-bold text-brand-700">SeekerLane</a>
+        <nav className="flex items-center gap-6">
+          <a className="nav-link" href="/about">About</a>
+          <a className="nav-link" href="/services">Services</a>
+          <a className="nav-link" href="/jobs">Jobs</a>
+          <a className="btn btn-primary" href="/contact">Contact</a>
         </nav>
       </div>
     </header>
