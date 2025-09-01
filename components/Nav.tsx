@@ -1,1 +1,15 @@
-export default function Nav(){return(<header style={{padding:'16px 24px',borderBottom:'1px solid #eee'}}><div style={{maxWidth:960,margin:'0 auto',display:'flex',justifyContent:'space-between'}}><a href='/'>SeekerLane</a><nav style={{display:'flex',gap:16}}><a href='/about'>About</a><a href='/services'>Services</a><a href='/jobs'>Jobs</a><a href='/contact'>Contact</a></nav></div></header>)}
+export default function Nav() {
+  return (
+    <header style={{ padding: '16px 24px', borderBottom: '1px solid #eee' }}>
+      <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', justifyContent: 'space-between' }}>
+        <a href="/">SeekerLane</a>
+        <nav style={{ display: 'flex', gap: 16 }}>
+          <a href="/about">About</a>
+          <a href="/services">Services</a>
+          <a href="/jobs">Jobs</a>
+          <a href="/contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+  );
+}
