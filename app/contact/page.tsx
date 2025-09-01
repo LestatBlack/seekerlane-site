@@ -1,0 +1,1 @@
+export default function Contact(){return(<section><h1>Contact</h1><form><input placeholder='Name'/></form></section>)}

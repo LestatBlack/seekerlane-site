@@ -1,0 +1,1 @@
+export default function About(){return(<section><h1>About</h1><p>We’re a boutique recruitment partner focused on technology roles.</p></section>)}

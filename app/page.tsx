@@ -1,0 +1,1 @@
+export default function Home(){return(<section><h1>We place top tech talent. Fast.</h1><p>SeekerLane specializes in engineering and product roles across the Americas.</p><div style={{display:'flex',gap:16,marginTop:24}}><a href='/services'>Our Services</a><a href='/jobs'>Browse Jobs</a></div></section>)}
