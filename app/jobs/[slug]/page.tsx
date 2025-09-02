@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
-import ApplicationForm from "@/components/ApplicationForm";
+import { supabase } from "../../../lib/supabaseClient";
+import ApplicationForm from "../../../components/ApplicationForm";
+
 
 type Job = {
   id: string;
