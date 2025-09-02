@@ -11,11 +11,11 @@ export default function Home() {
           alt="Hero"
           width={2400}
           height={1200}
-          // GPU + smaller height = smoother
           className="w-full h-[340px] object-cover transform-gpu will-change-transform"
           priority
         />
-        {/* Softer overlay (lighter == less overdraw) */}
+
+        {/* Softer overlay */}
         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
 
         {/* Tagline + buttons */}
@@ -25,9 +25,11 @@ export default function Home() {
               <span className="inline-block rounded-full bg-white/70 text-black px-4 py-1 text-sm">
                 LatAm reach • US standards
               </span>
-              <div className="flex items-center justify-center gap-3">
+
+              {/* ✅ Buttons: stack on mobile, row on sm+; light button for contrast */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a href="/services" className="btn btn-primary">Our Services</a>
-                <a href="/jobs" className="btn btn-outline bg-white">Browse Jobs</a>
+                <a href="/jobs" className="btn btn-light">Browse Jobs</a>
               </div>
             </div>
           </Reveal>
@@ -50,11 +52,13 @@ export default function Home() {
         ))}
       </div>
 
-      {/* MARQUEE — keep but we’ll throttle below if needed */}
+      {/* MARQUEE */}
       <div className="card p-6">
         <Marquee>
           {["Frontend", "Backend", "DevOps", "Data", "QA", "Product", "Design"].map((t) => (
-            <span key={t} className="px-4 py-2 rounded-full bg-slate-100 text-slate-700">{t}</span>
+            <span key={t} className="px-4 py-2 rounded-full bg-slate-100 text-slate-700">
+              {t}
+            </span>
           ))}
         </Marquee>
       </div>
