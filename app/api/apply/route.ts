@@ -16,17 +16,22 @@ export async function POST(req: NextRequest) {
   // Server-side (service role) client
   const supabase = createClient(url, service);
 
-  // Read form-data
+  // Read form-data sent from the ApplicationForm
   const form = await req.formData();
-  const jobId = form.get("job_id") as string;
-  const fullName = form.get("full_name") as string;
-  const email = form.get("email") as string;
-  const linkedin = (form.get("linkedin_url") as string) || "";
-  const cover = (form.get("cover_letter") as string) || "";
-  const resume = form.get("resume") as File | null; // <— lowercase
+
+  // ✅ NEW: separate names
+  const firstName = (form.get("first_name") as string | null)?.trim() || "";
+  const lastName  = (form.get("last_name")  as string | null)?.trim() || "";
+
+  const email     = (form.get("email") as string | null)?.trim() || "";
+  const linkedin  = ((form.get("linkedin_url") as string | null) || "").trim();
+  const cover     = ((form.get("cover_letter") as string | null) || "").trim();
+  const jobId     = (form.get("job_id") as string | null)?.trim() || "";
+
+  const resume    = form.get("resume") as File | null; // may be null
 
   // Basic validation
-  if (!jobId || !fullName || !email) {
+  if (!firstName || !lastName || !email || !jobId) {
     return NextResponse.json(
       { error: "Missing required fields." },
       { status: 400 }
@@ -36,11 +41,8 @@ export async function POST(req: NextRequest) {
   // Upload resume (optional)
   let resumeUrl: string | null = null;
   if (resume) {
-    // create a unique path
     const ext = resume.name.split(".").pop() || "pdf";
-    const path = `resumes/${Date.now()}-${Math.random()
-      .toString(36)
-      .slice(2)}.${ext}`;
+    const path = `resumes/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
     // IMPORTANT: bucket name must match exactly ("Resumes")
     const { error: upErr } = await supabase.storage
@@ -57,15 +59,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Public URL (bucket is public in MVP)
+    // Public URL (bucket is public for MVP)
     const { data: pub } = supabase.storage.from("Resumes").getPublicUrl(path);
     resumeUrl = pub?.publicUrl ?? null;
   }
 
-  // Insert application row
+  // Insert application row (expects columns first_name, last_name, email, linkedin_url, cover_letter, resume_url, job_id)
   const { error: insErr } = await supabase.from("applications").insert({
     job_id: jobId,
-    full_name: fullName,
+    first_name: firstName,
+    last_name: lastName,
     email,
     linkedin_url: linkedin,
     cover_letter: cover,
