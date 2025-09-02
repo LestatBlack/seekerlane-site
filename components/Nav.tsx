@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Nav() {
   return (
-    <header className="sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-slate-200">
+    <header className="sticky top-0 z-40 bg-white/80 border-b border-slate-200 supports-[backdrop-filter]:bg-white/70">
       <div className="container flex items-center justify-between py-3">
         <a href="/" className="flex items-center gap-3">
           {/* optional placeholder logo */}
