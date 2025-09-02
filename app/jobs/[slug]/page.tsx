@@ -47,34 +47,38 @@ export default function JobPage() {
     })();
   }, [slug]);
 
-  if (error) return <p className="text-red-600">{error}</p>;
-  if (!job) return <p className="text-black">Loading…</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+  if (!job) return <p className="text-slate-300">Loading…</p>;
 
   return (
     <article className="space-y-4">
-      <h1 className="text-3xl font-bold text-black">{job.title}</h1>
-      <p className="text-slate-600">
+      {/* ✅ Job title: bright white for contrast */}
+      <h1 className="text-3xl font-bold text-white">{job.title}</h1>
+
+      {/* ✅ Meta info: softer gray so still readable */}
+      <p className="text-slate-300">
         {[job.location || "Anywhere", job.remote ? "Remote" : null, job.type]
           .filter(Boolean)
           .join(" • ")}
       </p>
 
       {job.salary_min && job.salary_max && (
-        <p className="text-black">
+        <p className="text-slate-200">
           <strong>Compensation:</strong>{" "}
           {(job.currency || "USD")} {job.salary_min}–{job.salary_max}
         </p>
       )}
 
+      {/* ✅ Job description card: keep text dark on white background */}
       <div className="card p-6">
         <div className="prose max-w-none text-black whitespace-pre-wrap">
           {job.description}
         </div>
       </div>
 
+      {/* ✅ Apply form card: title white for consistency */}
       <div className="card p-6">
-        <h2 className="font-semibold text-lg text-black mb-2">Apply</h2>
-        {/* ✅ now we pass both jobId and jobTitle */}
+        <h2 className="font-semibold text-lg text-white mb-2">Apply</h2>
         <ApplicationForm jobId={job.id} jobTitle={job.title} />
       </div>
     </article>
