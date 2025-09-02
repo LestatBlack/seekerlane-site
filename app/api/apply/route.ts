@@ -3,12 +3,18 @@ import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs"; // needed for file uploads
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! // server-only
-);
-
 export async function POST(req: Request) {
+  // Read env vars at runtime
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !service) {
+    // Clear error message instead of crashing the build
+    return new NextResponse("Server not configured: missing Supabase env vars.", { status: 500 });
+  }
+
+  const supabase = createClient(url, service);
+
   try {
     const form = await req.formData();
     const job_id = String(form.get("job_id") || "");
@@ -41,7 +47,7 @@ export async function POST(req: Request) {
     if (insErr) return new NextResponse("Insert error: " + insErr.message, { status: 500 });
 
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (e) {
     return new NextResponse("Unexpected error", { status: 500 });
   }
 }
