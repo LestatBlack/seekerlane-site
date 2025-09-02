@@ -1,9 +1,10 @@
 "use client";
+export const dynamic = "force-dynamic"; // don't prerender at build
+
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { supabase } from "../../../lib/supabaseClient";
+import { createClient } from "@supabase/supabase-js";
 import ApplicationForm from "../../../components/ApplicationForm";
-
 
 type Job = {
   id: string;
@@ -24,6 +25,10 @@ export default function JobPage() {
   const [job, setJob] = useState<Job | null>(null);
 
   useEffect(() => {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const supabase = createClient(url, anon);
+
     (async () => {
       const { data } = await supabase
         .from("jobs")
@@ -41,7 +46,9 @@ export default function JobPage() {
     <article className="space-y-4">
       <h1 className="text-3xl font-bold text-black">{job.title}</h1>
       <p className="text-slate-600">
-        {[job.location || "Anywhere", job.remote ? "Remote" : null, job.type].filter(Boolean).join(" • ")}
+        {[job.location || "Anywhere", job.remote ? "Remote" : null, job.type]
+          .filter(Boolean)
+          .join(" • ")}
       </p>
       {job.salary_min && job.salary_max && (
         <p className="text-black">
