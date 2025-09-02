@@ -1,8 +1,9 @@
 "use client";
+export const dynamic = "force-dynamic"; // don't prerender at build
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase } from "../../lib/supabaseClient";
-
+import { createClient } from "@supabase/supabase-js";
 
 type Job = {
   id: string;
@@ -19,6 +20,10 @@ export default function JobsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const supabase = createClient(url, anon);
+
     (async () => {
       const { data, error } = await supabase
         .from("jobs")
@@ -31,7 +36,7 @@ export default function JobsPage() {
     })();
   }, []);
 
-  if (loading) return <p>Loading…</p>;
+  if (loading) return <p className="text-black">Loading…</p>;
 
   return (
     <section className="space-y-4">
