@@ -1,118 +1,76 @@
 "use client";
+import { useState } from "react";
 
-import { useRef, useState } from "react";
-
-export default function ApplicationForm({ jobId }: { jobId: string }) {
-  const fileRef = useRef<HTMLInputElement | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+export default function ApplicationForm({ jobId, jobTitle }: { jobId: string; jobTitle: string }) {
+  const [status, setStatus] = useState<"idle"|"submitting"|"ok"|"error">("idle");
   const [error, setError] = useState<string | null>(null);
-  const [ok, setOk] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setStatus("submitting");
     setError(null);
-    setOk(false);
 
-    const formEl = e.currentTarget;
-    const fd = new FormData(formEl);
+    const form = e.currentTarget;
+    const data = new FormData(form);
 
-    // Ensure we have a file
-    const file = fileRef.current?.files?.[0] || (fd.get("resume") as File | null);
-    if (!file) {
-      setError("Please attach your resume as a PDF.");
-      return;
-    }
-    // Validate file type/size (<= 5 MB)
-    if (file.type !== "application/pdf") {
-      setError("Resume must be a PDF.");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setError("PDF is too large (max 5 MB).");
-      return;
-    }
-
-    // Add required fields
-    fd.set("job_id", jobId);
-
-    // Submit
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/apply", { method: "POST", body: fd });
-      const text = await res.text(); // route may return JSON or text
-      if (!res.ok) {
-        setError(text || "Upload failed.");
-      } else {
-        try {
-          const j = JSON.parse(text);
-          if (!j?.ok) setError("Server did not confirm success.");
-          else setOk(true);
-        } catch {
-          // plain text ok
-          setOk(true);
-        }
-        // reset form
-        formEl.reset();
-        if (fileRef.current) fileRef.current.value = "";
-      }
-    } catch (err: any) {
-      setError(err?.message || "Network error.");
-    } finally {
-      setSubmitting(false);
+    const res = await fetch("/api/apply", { method: "POST", body: data });
+    const json = await res.json();
+    if (!res.ok) {
+      setError(json.error || "Sorry, something went wrong. Try again.");
+      setStatus("error");
+    } else {
+      setStatus("ok");
+      form.reset();
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
-      <div className="grid gap-3 md:grid-cols-2">
+    <form onSubmit={onSubmit} className="space-y-4" encType="multipart/form-data">
+      {/* Which job (read-only for the candidate) */}
+      <div>
+        <label className="block text-sm font-medium text-black">Applying to</label>
+        <input value={jobTitle} readOnly className="mt-1 w-full rounded-xl border px-3 py-2 bg-slate-50 text-black" />
+        <input type="hidden" name="job_id" value={jobId} />
+      </div>
+
+      {/* First / Last name */}
+      <div className="grid md:grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm font-medium text-black">Full name</label>
-          <input name="full_name" required className="input" placeholder="Ada Lovelace" />
+          <label className="block text-sm font-medium text-black">First name</label>
+          <input name="first_name" required className="mt-1 w-full rounded-xl border px-3 py-2 text-black" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-black">Email</label>
-          <input name="email" type="email" required className="input" placeholder="ada@example.com" />
+          <label className="block text-sm font-medium text-black">Last name</label>
+          <input name="last_name" required className="mt-1 w-full rounded-xl border px-3 py-2 text-black" />
         </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-black">Email</label>
+        <input type="email" name="email" required className="mt-1 w-full rounded-xl border px-3 py-2 text-black" />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-black">LinkedIn URL</label>
-        <input name="linkedin_url" className="input" placeholder="https://linkedin.com/in/..." />
+        <input name="linkedin_url" placeholder="https://linkedin.com/in/..." className="mt-1 w-full rounded-xl border px-3 py-2 text-black" />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-black">Resume (PDF)</label>
-        <input
-          ref={fileRef}
-          name="resume"
-          type="file"
-          accept="application/pdf"
-          required
-          className="block"
-        />
+        <input type="file" name="resume" accept="application/pdf" className="mt-1 block" />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-black">Cover letter</label>
-        <textarea name="cover_letter" className="input h-40" placeholder="(optional)" />
+        <textarea name="cover_letter" rows={6} className="mt-1 w-full rounded-xl border px-3 py-2 text-black" />
       </div>
 
-      <button disabled={submitting} className="btn btn-primary">
-        {submitting ? "Submitting…" : "Submit application"}
+      <button disabled={status==="submitting"} className="btn btn-primary">
+        {status==="submitting" ? "Submitting..." : "Submit application"}
       </button>
 
-      {ok && <p className="text-green-600">Thanks! Your application was received.</p>}
-      {error && <p className="text-red-600">{error}</p>}
-      {/* minimal styles if needed */}
-      <style jsx>{`
-        .input {
-          width: 100%;
-          padding: 10px 12px;
-          border: 1px solid #cbd5e1;
-          border-radius: 12px;
-          background: white;
-        }
-      `}</style>
+      {status==="ok" && <p className="text-green-600">Thanks! We received your application.</p>}
+      {status==="error" && <p className="text-red-600">{error}</p>}
     </form>
   );
 }
