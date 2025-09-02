@@ -1,36 +1,37 @@
 "use client";
 
 import { useEffect } from "react";
+import Lenis from "@studio-freight/lenis";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    let lenis: any;
+    // Create the Lenis instance
+    const lenis = new Lenis({
+      // how long the smoothing lasts (lower = snappier, higher = floatier)
+      duration: 1.0,
+      // quadratic ease-out
+      easing: (t: number) => 1 - Math.pow(1 - t, 2),
+      // enable smooth wheel scrolling on desktop
+      smoothWheel: true,
+      // make the wheel slightly more “powerful” so it feels quicker
+      wheelMultiplier: 1.2,
+      // default touch behavior; keep as-is (don’t add smoothTouch, it’s not in types)
+      touchMultiplier: 1,
+    });
+
+    // RAF loop
     let rafId: number;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
 
-    (async () => {
-      try {
-        const { default: Lenis } = await import("lenis"); // loaded only in the browser
-        lenis = new Lenis({
-          duration: 1.0,      // try 0.8–1.2 to taste
-          smoothWheel: true,
-          smoothTouch: false, // leave false so mobile stays snappy
-          easing: (t: number) => 1 - Math.pow(1 - t, 2), // easeOutQuad
-        });
-
-        const raf = (time: number) => {
-          lenis.raf(time);
-          rafId = requestAnimationFrame(raf);
-        };
-        rafId = requestAnimationFrame(raf);
-      } catch (e) {
-        // If lenis isn't installed, silently keep normal scroll
-        console.warn("Lenis not active:", e);
-      }
-    })();
-
+    // cleanup
     return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      // lenis?.destroy?.(); // only if the version supports destroy()
+      cancelAnimationFrame(rafId);
+      // @ts-expect-error destroy may not be typed in some builds
+      lenis.destroy?.();
     };
   }, []);
 
