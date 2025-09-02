@@ -39,9 +39,9 @@ export async function POST(req: Request) {
     const path = `applications/${job_id}/${Date.now()}_${safeEmail}.pdf`;
 
     const { error: upErr } = await supabase.storage
-      .from("resumes")
-      .upload(path, resume, {
-        contentType: resume.type || "application/pdf",
+      .from("Resumes")
+      .upload(path, Resume, {
+        contentType: Resume.type || "application/pdf",
         upsert: false,
       });
 
