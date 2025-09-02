@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-export const runtime = "nodejs"; // needed for file uploads
+export const runtime = "nodejs"; // required for file uploads on Vercel
 
 export async function POST(req: Request) {
-  // Read env vars at runtime
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !service) {
-    // Clear error message instead of crashing the build
     return new NextResponse("Server not configured: missing Supabase env vars.", { status: 500 });
   }
 
@@ -17,6 +15,7 @@ export async function POST(req: Request) {
 
   try {
     const form = await req.formData();
+
     const job_id = String(form.get("job_id") || "");
     const full_name = String(form.get("full_name") || "");
     const email = String(form.get("email") || "");
@@ -25,29 +24,51 @@ export async function POST(req: Request) {
     const resume = form.get("resume") as File | null;
 
     if (!job_id || !full_name || !email || !resume) {
-      return new NextResponse("Missing fields", { status: 400 });
+      return new NextResponse("Missing required fields.", { status: 400 });
+    }
+    // Validate file
+    if (resume.type !== "application/pdf") {
+      return new NextResponse("Resume must be a PDF.", { status: 400 });
+    }
+    if (resume.size > 5 * 1024 * 1024) {
+      return new NextResponse("PDF exceeds 5 MB.", { status: 400 });
     }
 
     // Upload resume
-    const cleanEmail = email.replace(/[^a-zA-Z0-9_.-]/g, "");
-    const path = `applications/${job_id}/${Date.now()}_${cleanEmail}.pdf`;
+    const safeEmail = email.replace(/[^a-zA-Z0-9_.-]/g, "");
+    const path = `applications/${job_id}/${Date.now()}_${safeEmail}.pdf`;
 
     const { error: upErr } = await supabase.storage
       .from("resumes")
-      .upload(path, resume, { contentType: "application/pdf", upsert: false });
-    if (upErr) return new NextResponse("Upload error: " + upErr.message, { status: 500 });
+      .upload(path, resume, {
+        contentType: resume.type || "application/pdf",
+        upsert: false,
+      });
 
+    if (upErr) {
+      return new NextResponse("Upload error: " + upErr.message, { status: 500 });
+    }
+
+    // Get public URL
     const { data: urlData } = supabase.storage.from("resumes").getPublicUrl(path);
     const resume_url = urlData?.publicUrl ?? null;
 
-    // Save application row
+    // Insert application
     const { error: insErr } = await supabase.from("applications").insert({
-      job_id, full_name, email, linkedin_url, cover_letter, resume_url
+      job_id,
+      full_name,
+      email,
+      linkedin_url,
+      cover_letter,
+      resume_url,
     });
-    if (insErr) return new NextResponse("Insert error: " + insErr.message, { status: 500 });
+
+    if (insErr) {
+      return new NextResponse("DB insert error: " + insErr.message, { status: 500 });
+    }
 
     return NextResponse.json({ ok: true });
-  } catch (e) {
-    return new NextResponse("Unexpected error", { status: 500 });
+  } catch (e: any) {
+    return new NextResponse("Unexpected server error: " + (e?.message || "unknown"), { status: 500 });
   }
 }
