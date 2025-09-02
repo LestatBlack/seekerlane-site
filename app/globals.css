@@ -26,9 +26,8 @@ body { /* simple defaults */
 }
 
 /* ✅ New light button for contrast on dark backgrounds */
-.btn-light { 
-  @apply bg-white text-slate-900 border border-white/60 hover:bg-white/90; 
-}
+.btn-light { @apply bg-white/90 text-slate-900 hover:bg-white shadow-sm border border-white/60; }
+
 
 .card { 
   @apply rounded-2xl border border-slate-200 shadow-sm bg-white; 
