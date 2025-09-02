@@ -74,7 +74,8 @@ export default function JobPage() {
 
       <div className="card p-6">
         <h2 className="font-semibold text-lg text-black mb-2">Apply</h2>
-        <ApplicationForm jobId={job.id} />
+        {/* ✅ now we pass both jobId and jobTitle */}
+        <ApplicationForm jobId={job.id} jobTitle={job.title} />
       </div>
     </article>
   );
