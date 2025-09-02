@@ -1,11 +1,10 @@
 "use client";
-console.log("ENV URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-console.log("ENV ANON present:", !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
+import { SUPABASE_URL, SUPABASE_ANON } from "../../lib/publicEnv";  // ✅ use helper
 
 type Job = {
   id: string;
@@ -23,8 +22,8 @@ export default function JobsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const url = SUPABASE_URL;
+    const anon = SUPABASE_ANON;
 
     if (!url || !anon) {
       setError("Site not configured: missing Supabase env vars.");
@@ -77,4 +76,3 @@ export default function JobsPage() {
     </section>
   );
 }
-// trigger redeploy
