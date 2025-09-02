@@ -3,11 +3,9 @@ export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";         // ✅ goes with other imports
-import ApplicationForm from "../../../components/ApplicationForm"; // ✅ component import
-
-// Optional: if you create a helper file for envs (lib/publicEnv.ts)
-// import { SUPABASE_URL, SUPABASE_ANON } from "../../lib/publicEnv";
+import { createClient } from "@supabase/supabase-js";
+import { SUPABASE_URL, SUPABASE_ANON } from "../../../lib/publicEnv"; // ✅ helper
+import ApplicationForm from "../../../components/ApplicationForm";
 
 type Job = {
   id: string;
@@ -29,16 +27,12 @@ export default function JobPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!url || !anon) {
+    if (!SUPABASE_URL || !SUPABASE_ANON) {
       setError("Site not configured: missing Supabase env vars.");
       return;
     }
 
-    // ✅ create the client *inside* the hook with env vars
-    const supabase = createClient(url, anon);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
 
     (async () => {
       const { data, error } = await supabase
@@ -64,12 +58,14 @@ export default function JobPage() {
           .filter(Boolean)
           .join(" • ")}
       </p>
+
       {job.salary_min && job.salary_max && (
         <p className="text-black">
           <strong>Compensation:</strong>{" "}
           {(job.currency || "USD")} {job.salary_min}–{job.salary_max}
         </p>
       )}
+
       <div className="card p-6">
         <div className="prose max-w-none text-black whitespace-pre-wrap">
           {job.description}
