@@ -8,7 +8,7 @@ export default function Home() {
       <div className="relative rounded-2xl overflow-hidden">
         <Parallax range={[-20, 20]}>
           <Image
-            src="https://placehold.co/2400x1200/png?text=SeekerLane+Hero"
+            src="/SLbanner.png"
             alt="Hero"
             width={2400}
             height={1200}
