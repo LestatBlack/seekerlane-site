@@ -12,12 +12,16 @@ export default function Home() {
             alt="Hero"
             width={2400}
             height={1200}
-            className="w-full h-[360px] object-cover"
+            className="w-full h-[520px] object-cover"
             priority
           />
         </Parallax>
+
+        {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/40" />
-      <div className="absolute inset-x-0 bottom-30 flex flex-col items-center text-center px-6">
+
+        {/* Tagline + buttons moved lower */}
+        <div className="absolute inset-x-0 bottom-28 flex flex-col items-center text-center px-6">
           <Reveal>
             <div className="space-y-4 max-w-2xl">
               <span className="inline-block rounded-full bg-white/20 text-white px-4 py-1 text-sm">
@@ -35,9 +39,9 @@ export default function Home() {
       {/* SCROLL-REVEAL feature cards */}
       <div className="grid md:grid-cols-3 gap-6">
         {[
-          {title: "Quality > Volume", text: "3–5 great profiles beat 50 resumes."},
-          {title: "Process & KPIs", text: "Clear SLAs, structured interviews, weekly reports."},
-          {title: "Candidate Experience", text: "Human-first outreach, fast feedback, high close."},
+          { title: "Quality > Volume", text: "3–5 great profiles beat 50 resumes." },
+          { title: "Process & KPIs", text: "Clear SLAs, structured interviews, weekly reports." },
+          { title: "Candidate Experience", text: "Human-first outreach, fast feedback, high close." },
         ].map((f, i) => (
           <Reveal key={f.title} delay={i * 0.1}>
             <div className="card p-6 hover:shadow-md transition">
