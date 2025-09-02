@@ -82,5 +82,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json({ ok: true });
+  // ✅ send the URL back so the form can show a “uploaded OK” message + link
+  return NextResponse.json({ ok: true, resumeUrl });
 }
