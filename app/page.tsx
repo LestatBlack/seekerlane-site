@@ -23,10 +23,6 @@ export default function Home() {
               <span className="inline-block rounded-full bg-white/20 text-white px-4 py-1 text-sm">
                 LatAm reach • US standards
               </span>
-              <h1 className="text-4xl md:text-5xl font-extrabold text-white">
-                We place <span className="text-brand-300">top tech talent</span>. Fast.
-              </h1>
-              <p className="text-slate-100">Shortlists in days, not weeks.</p>
               <div className="flex items-center justify-center gap-3">
                 <a href="/services" className="btn btn-primary">Our Services</a>
                 <a href="/jobs" className="btn btn-outline bg-white/80">Browse Jobs</a>
