@@ -1,4 +1,6 @@
 "use client";
+console.log("ENV URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+console.log("ENV ANON present:", !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
