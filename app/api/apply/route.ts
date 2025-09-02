@@ -13,38 +13,37 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Server-side (service role) client
   const supabase = createClient(url, service);
 
-  // Read form-data sent from the ApplicationForm
   const form = await req.formData();
 
-  // ✅ NEW: separate names
   const firstName = (form.get("first_name") as string | null)?.trim() || "";
   const lastName  = (form.get("last_name")  as string | null)?.trim() || "";
-
   const email     = (form.get("email") as string | null)?.trim() || "";
   const linkedin  = ((form.get("linkedin_url") as string | null) || "").trim();
   const cover     = ((form.get("cover_letter") as string | null) || "").trim();
   const jobId     = (form.get("job_id") as string | null)?.trim() || "";
 
-  const resume    = form.get("resume") as File | null; // may be null
+  // NEW: if resume already uploaded, we’ll get this:
+  const resumeUrlProvided = (form.get("resume_url") as string | null)?.trim() || "";
 
-  // Basic validation
+  // Optional file (only if user didn’t pre-upload)
+  const resume = form.get("resume") as File | null;
+
   if (!firstName || !lastName || !email || !jobId) {
-    return NextResponse.json(
-      { error: "Missing required fields." },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
   }
 
-  // Upload resume (optional)
   let resumeUrl: string | null = null;
-  if (resume) {
+
+  if (resumeUrlProvided) {
+    // Already uploaded via /api/upload
+    resumeUrl = resumeUrlProvided;
+  } else if (resume) {
+    // Fallback: upload here if user didn’t pre-upload for some reason
     const ext = resume.name.split(".").pop() || "pdf";
     const path = `resumes/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-    // IMPORTANT: bucket name must match exactly ("Resumes")
     const { error: upErr } = await supabase.storage
       .from("Resumes")
       .upload(path, resume, {
@@ -53,18 +52,13 @@ export async function POST(req: NextRequest) {
       });
 
     if (upErr) {
-      return NextResponse.json(
-        { error: `Upload error: ${upErr.message}` },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: `Upload error: ${upErr.message}` }, { status: 500 });
     }
 
-    // Public URL (bucket is public for MVP)
     const { data: pub } = supabase.storage.from("Resumes").getPublicUrl(path);
     resumeUrl = pub?.publicUrl ?? null;
   }
 
-  // Insert application row (expects columns first_name, last_name, email, linkedin_url, cover_letter, resume_url, job_id)
   const { error: insErr } = await supabase.from("applications").insert({
     job_id: jobId,
     first_name: firstName,
@@ -76,12 +70,9 @@ export async function POST(req: NextRequest) {
   });
 
   if (insErr) {
-    return NextResponse.json(
-      { error: `DB insert error: ${insErr.message}` },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: `DB insert error: ${insErr.message}` }, { status: 500 });
   }
 
-  // ✅ send the URL back so the form can show a “uploaded OK” message + link
+  // send URL back so form can show link
   return NextResponse.json({ ok: true, resumeUrl });
 }
