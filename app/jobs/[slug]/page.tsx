@@ -3,8 +3,11 @@ export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
-import ApplicationForm from "../../../components/ApplicationForm";
+import { createClient } from "@supabase/supabase-js";         // ✅ goes with other imports
+import ApplicationForm from "../../../components/ApplicationForm"; // ✅ component import
+
+// Optional: if you create a helper file for envs (lib/publicEnv.ts)
+// import { SUPABASE_URL, SUPABASE_ANON } from "../../lib/publicEnv";
 
 type Job = {
   id: string;
@@ -34,6 +37,7 @@ export default function JobPage() {
       return;
     }
 
+    // ✅ create the client *inside* the hook with env vars
     const supabase = createClient(url, anon);
 
     (async () => {
@@ -43,6 +47,7 @@ export default function JobPage() {
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
+
       if (error) setError(error.message);
       else setJob(data as Job);
     })();
@@ -61,11 +66,14 @@ export default function JobPage() {
       </p>
       {job.salary_min && job.salary_max && (
         <p className="text-black">
-          <strong>Compensation:</strong> {(job.currency || "USD")} {job.salary_min}–{job.salary_max}
+          <strong>Compensation:</strong>{" "}
+          {(job.currency || "USD")} {job.salary_min}–{job.salary_max}
         </p>
       )}
       <div className="card p-6">
-        <div className="prose max-w-none text-black whitespace-pre-wrap">{job.description}</div>
+        <div className="prose max-w-none text-black whitespace-pre-wrap">
+          {job.description}
+        </div>
       </div>
 
       <div className="card p-6">
