@@ -1,5 +1,5 @@
 "use client";
-export const dynamic = "force-dynamic"; // don't prerender at build
+export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -18,10 +18,18 @@ type Job = {
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!url || !anon) {
+      setError("Site not configured: missing Supabase env vars.");
+      setLoading(false);
+      return;
+    }
+
     const supabase = createClient(url, anon);
 
     (async () => {
@@ -31,12 +39,14 @@ export default function JobsPage() {
         .eq("published", true)
         .order("created_at", { ascending: false });
 
-      if (!error && data) setJobs(data as Job[]);
+      if (error) setError(error.message);
+      else if (data) setJobs(data as Job[]);
       setLoading(false);
     })();
   }, []);
 
   if (loading) return <p className="text-black">Loading…</p>;
+  if (error) return <p className="text-red-600">{error}</p>;
 
   return (
     <section className="space-y-4">
