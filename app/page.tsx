@@ -6,16 +6,16 @@ export default function Home() {
     <section className="space-y-16">
       {/* HERO with parallax background */}
       <div className="relative rounded-2xl overflow-hidden">
-        <Parallax range={[-20, 20]}>
-          <Image
-            src="/SLbanner.png"
-            alt="Hero"
-            width={2400}
-            height={1200}
-            className="w-full h-[400px] object-cover"
-            priority
-          />
-        </Parallax>
+        <Parallax range={[-8, 8]}>   {/* was [-20,20] */}
+  <Image
+    src="/SLbanner.png"
+    alt="Hero"
+    width={2400}
+    height={1200}
+    className="w-full h-[400px] object-cover will-change-transform"  // <- add will-change
+    priority
+  />
+</Parallax>
 
         {/* Overlay (you can lighten this later if text looks too dark on top) */}
         <div className="absolute inset-0 bg-black/40" />
