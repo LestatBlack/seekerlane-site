@@ -1,13 +1,20 @@
+// app/providers.tsx
 "use client";
+
 import { ReactNode, useEffect } from "react";
 import Lenis from "@studio-freight/lenis";
 
 export default function Providers({ children }: { children: ReactNode }) {
   useEffect(() => {
+    // Respect users that prefer reduced motion
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) return;
+
     const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t: number) => 1 - Math.pow(1 - t, 2),
-      smoothWheel: true,
+      smoothWheel: true,    // mouse wheel feels smooth
+      lerp: 0.1,            // easing
+      duration: 1.1,        // ~ how "glidey" the scroll feels
+      touchMultiplier: 1.2, // a tiny boost on touch devices
     });
 
     let rafId: number;
