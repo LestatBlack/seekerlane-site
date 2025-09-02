@@ -1,3 +1,3 @@
-// TEMP: use until env vars behave in Vercel
-export const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
-export const SUPABASE_ANON = "YOUR_ANON_KEY";
+// Public values only – safe to expose in the browser
+export const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";   // <-- paste your Project URL
+export const SUPABASE_ANON = "YOUR-ANON-KEY";                     // <-- paste your anon public key
