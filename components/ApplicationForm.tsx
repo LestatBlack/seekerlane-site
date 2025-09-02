@@ -1,54 +1,118 @@
 "use client";
-import { useState } from "react";
+
+import { useRef, useState } from "react";
 
 export default function ApplicationForm({ jobId }: { jobId: string }) {
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "err">("idle");
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [ok, setOk] = useState(false);
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setStatus("sending");
-    const form = e.currentTarget;
-    const fd = new FormData(form);
+    setError(null);
+    setOk(false);
 
+    const formEl = e.currentTarget;
+    const fd = new FormData(formEl);
+
+    // Ensure we have a file
+    const file = fileRef.current?.files?.[0] || (fd.get("resume") as File | null);
+    if (!file) {
+      setError("Please attach your resume as a PDF.");
+      return;
+    }
+    // Validate file type/size (<= 5 MB)
+    if (file.type !== "application/pdf") {
+      setError("Resume must be a PDF.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("PDF is too large (max 5 MB).");
+      return;
+    }
+
+    // Add required fields
+    fd.set("job_id", jobId);
+
+    // Submit
+    setSubmitting(true);
     try {
       const res = await fetch("/api/apply", { method: "POST", body: fd });
-      if (!res.ok) throw new Error(await res.text());
-      setStatus("ok");
-      form.reset();
-    } catch (err) {
-      console.error(err);
-      setStatus("err");
+      const text = await res.text(); // route may return JSON or text
+      if (!res.ok) {
+        setError(text || "Upload failed.");
+      } else {
+        try {
+          const j = JSON.parse(text);
+          if (!j?.ok) setError("Server did not confirm success.");
+          else setOk(true);
+        } catch {
+          // plain text ok
+          setOk(true);
+        }
+        // reset form
+        formEl.reset();
+        if (fileRef.current) fileRef.current.value = "";
+      }
+    } catch (err: any) {
+      setError(err?.message || "Network error.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 max-w-xl">
-      <input type="hidden" name="job_id" value={jobId} />
-      <div>
-        <label className="block text-sm mb-1 text-black">Full name</label>
-        <input name="full_name" required className="w-full rounded-xl border border-slate-300 px-3 py-2" />
+    <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
+      <div className="grid gap-3 md:grid-cols-2">
+        <div>
+          <label className="block text-sm font-medium text-black">Full name</label>
+          <input name="full_name" required className="input" placeholder="Ada Lovelace" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-black">Email</label>
+          <input name="email" type="email" required className="input" placeholder="ada@example.com" />
+        </div>
       </div>
+
       <div>
-        <label className="block text-sm mb-1 text-black">Email</label>
-        <input type="email" name="email" required className="w-full rounded-xl border border-slate-300 px-3 py-2" />
+        <label className="block text-sm font-medium text-black">LinkedIn URL</label>
+        <input name="linkedin_url" className="input" placeholder="https://linkedin.com/in/..." />
       </div>
+
       <div>
-        <label className="block text-sm mb-1 text-black">LinkedIn URL</label>
-        <input name="linkedin_url" type="url" placeholder="https://linkedin.com/in/..." className="w-full rounded-xl border border-slate-300 px-3 py-2" />
+        <label className="block text-sm font-medium text-black">Resume (PDF)</label>
+        <input
+          ref={fileRef}
+          name="resume"
+          type="file"
+          accept="application/pdf"
+          required
+          className="block"
+        />
       </div>
+
       <div>
-        <label className="block text-sm mb-1 text-black">Resume (PDF)</label>
-        <input name="resume" type="file" accept="application/pdf" required />
+        <label className="block text-sm font-medium text-black">Cover letter</label>
+        <textarea name="cover_letter" className="input h-40" placeholder="(optional)" />
       </div>
-      <div>
-        <label className="block text-sm mb-1 text-black">Cover letter</label>
-        <textarea name="cover_letter" rows={5} className="w-full rounded-xl border border-slate-300 px-3 py-2" />
-      </div>
-      <button type="submit" className="btn btn-primary" disabled={status === "sending"}>
-        {status === "sending" ? "Sending…" : "Submit application"}
+
+      <button disabled={submitting} className="btn btn-primary">
+        {submitting ? "Submitting…" : "Submit application"}
       </button>
-      {status === "ok" && <p className="text-green-600">Thanks! We received your application.</p>}
-      {status === "err" && <p className="text-red-600">Sorry, something went wrong. Try again.</p>}
+
+      {ok && <p className="text-green-600">Thanks! Your application was received.</p>}
+      {error && <p className="text-red-600">{error}</p>}
+      {/* minimal styles if needed */}
+      <style jsx>{`
+        .input {
+          width: 100%;
+          padding: 10px 12px;
+          border: 1px solid #cbd5e1;
+          border-radius: 12px;
+          background: white;
+        }
+      `}</style>
     </form>
   );
 }
