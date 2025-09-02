@@ -1,74 +1,83 @@
-import { NextResponse } from "next/server";
+// app/api/apply/route.ts
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-export const runtime = "nodejs"; // required for file uploads on Vercel
-
-export async function POST(req: Request) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
+export async function POST(req: NextRequest) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const service = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
   if (!url || !service) {
-    return new NextResponse("Server not configured: missing Supabase env vars.", { status: 500 });
+    return NextResponse.json(
+      { error: "Server not configured: missing Supabase env vars." },
+      { status: 500 }
+    );
   }
 
+  // Server-side (service role) client
   const supabase = createClient(url, service);
 
-  try {
-    const form = await req.formData();
+  // Read form-data
+  const form = await req.formData();
+  const jobId = form.get("job_id") as string;
+  const fullName = form.get("full_name") as string;
+  const email = form.get("email") as string;
+  const linkedin = (form.get("linkedin_url") as string) || "";
+  const cover = (form.get("cover_letter") as string) || "";
+  const resume = form.get("resume") as File | null; // <— lowercase
 
-    const job_id = String(form.get("job_id") || "");
-    const full_name = String(form.get("full_name") || "");
-    const email = String(form.get("email") || "");
-    const linkedin_url = form.get("linkedin_url") ? String(form.get("linkedin_url")) : null;
-    const cover_letter = form.get("cover_letter") ? String(form.get("cover_letter")) : null;
-    const resume = form.get("resume") as File | null;
+  // Basic validation
+  if (!jobId || !fullName || !email) {
+    return NextResponse.json(
+      { error: "Missing required fields." },
+      { status: 400 }
+    );
+  }
 
-    if (!job_id || !full_name || !email || !resume) {
-      return new NextResponse("Missing required fields.", { status: 400 });
-    }
-    // Validate file
-    if (resume.type !== "application/pdf") {
-      return new NextResponse("Resume must be a PDF.", { status: 400 });
-    }
-    if (resume.size > 5 * 1024 * 1024) {
-      return new NextResponse("PDF exceeds 5 MB.", { status: 400 });
-    }
+  // Upload resume (optional)
+  let resumeUrl: string | null = null;
+  if (resume) {
+    // create a unique path
+    const ext = resume.name.split(".").pop() || "pdf";
+    const path = `resumes/${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2)}.${ext}`;
 
-    // Upload resume
-    const safeEmail = email.replace(/[^a-zA-Z0-9_.-]/g, "");
-    const path = `applications/${job_id}/${Date.now()}_${safeEmail}.pdf`;
-
+    // IMPORTANT: bucket name must match exactly ("Resumes")
     const { error: upErr } = await supabase.storage
       .from("Resumes")
-      .upload(path, Resume, {
-        contentType: Resume.type || "application/pdf",
+      .upload(path, resume, {
+        contentType: resume.type || "application/pdf",
         upsert: false,
       });
 
     if (upErr) {
-      return new NextResponse("Upload error: " + upErr.message, { status: 500 });
+      return NextResponse.json(
+        { error: `Upload error: ${upErr.message}` },
+        { status: 500 }
+      );
     }
 
-    // Get public URL
-    const { data: urlData } = supabase.storage.from("resumes").getPublicUrl(path);
-    const resume_url = urlData?.publicUrl ?? null;
-
-    // Insert application
-    const { error: insErr } = await supabase.from("applications").insert({
-      job_id,
-      full_name,
-      email,
-      linkedin_url,
-      cover_letter,
-      resume_url,
-    });
-
-    if (insErr) {
-      return new NextResponse("DB insert error: " + insErr.message, { status: 500 });
-    }
-
-    return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    return new NextResponse("Unexpected server error: " + (e?.message || "unknown"), { status: 500 });
+    // Public URL (bucket is public in MVP)
+    const { data: pub } = supabase.storage.from("Resumes").getPublicUrl(path);
+    resumeUrl = pub?.publicUrl ?? null;
   }
+
+  // Insert application row
+  const { error: insErr } = await supabase.from("applications").insert({
+    job_id: jobId,
+    full_name: fullName,
+    email,
+    linkedin_url: linkedin,
+    cover_letter: cover,
+    resume_url: resumeUrl,
+  });
+
+  if (insErr) {
+    return NextResponse.json(
+      { error: `DB insert error: ${insErr.message}` },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({ ok: true });
 }
