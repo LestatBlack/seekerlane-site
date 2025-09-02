@@ -1,5 +1,5 @@
 "use client";
-export const dynamic = "force-dynamic"; // don't prerender at build
+export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -23,23 +23,32 @@ export default function JobPage() {
   const params = useParams();
   const slug = params?.slug as string;
   const [job, setJob] = useState<Job | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!url || !anon) {
+      setError("Site not configured: missing Supabase env vars.");
+      return;
+    }
+
     const supabase = createClient(url, anon);
 
     (async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("jobs")
         .select("*")
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
-      if (data) setJob(data as Job);
+      if (error) setError(error.message);
+      else setJob(data as Job);
     })();
   }, [slug]);
 
+  if (error) return <p className="text-red-600">{error}</p>;
   if (!job) return <p className="text-black">Loading…</p>;
 
   return (
