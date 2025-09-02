@@ -17,19 +17,19 @@ export default function Home() {
           />
         </Parallax>
 
-        {/* Dark overlay */}
+        {/* Overlay (you can lighten this later if text looks too dark on top) */}
         <div className="absolute inset-0 bg-black/40" />
 
         {/* Tagline + buttons moved lower */}
         <div className="absolute inset-x-0 bottom-7 flex flex-col items-center text-center px-6">
           <Reveal>
             <div className="space-y-4 max-w-2xl">
-              <span className="inline-block rounded-full bg-white/20 text-white px-4 py-1 text-sm">
+              <span className="inline-block rounded-full bg-white/80 text-black px-4 py-1 text-sm">
                 LatAm reach • US standards
               </span>
               <div className="flex items-center justify-center gap-3">
                 <a href="/services" className="btn btn-primary">Our Services</a>
-                <a href="/jobs" className="btn btn-outline bg-white/80">Browse Jobs</a>
+                <a href="/jobs" className="btn btn-outline bg-white/80 text-black">Browse Jobs</a>
               </div>
             </div>
           </Reveal>
@@ -45,8 +45,8 @@ export default function Home() {
         ].map((f, i) => (
           <Reveal key={f.title} delay={i * 0.1}>
             <div className="card p-6 hover:shadow-md transition">
-              <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
-              <p className="text-slate-600">{f.text}</p>
+              <h3 className="font-semibold text-lg mb-2 text-black">{f.title}</h3>
+              <p className="text-black">{f.text}</p>
             </div>
           </Reveal>
         ))}
