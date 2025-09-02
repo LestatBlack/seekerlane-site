@@ -1,3 +1,4 @@
+// app/layout.tsx
 import "./globals.css"
 import Providers from "./providers"
 import Nav from "../components/Nav"
@@ -12,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       {/* Soft, clean background for the whole site */}
-        <body className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white">
+      <body className="lenis-smooth antialiased min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white">
         <Providers>
           <Nav />
           <main className="container py-10">{children}</main>
