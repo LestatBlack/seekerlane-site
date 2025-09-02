@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       {/* Soft, clean background for the whole site */}
-        <body className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white">
+        <body className="min-h-screen bg-gradient-to-br from-brand-900 via-slate-900 to-brand-800 text-white">
         <Providers>
           <Nav />
           <main className="container py-10">{children}</main>
