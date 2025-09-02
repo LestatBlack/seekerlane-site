@@ -21,7 +21,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/40" />
 
         {/* Tagline + buttons moved lower */}
-        <div className="absolute inset-x-0 bottom-80 flex flex-col items-center text-center px-6">
+        <div className="absolute inset-x-0 bottom-10 flex flex-col items-center text-center px-6">
           <Reveal>
             <div className="space-y-4 max-w-2xl">
               <span className="inline-block rounded-full bg-white/20 text-white px-4 py-1 text-sm">
