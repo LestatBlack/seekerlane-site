@@ -50,28 +50,32 @@ export default function JobPage() {
   if (!job) return <p className="text-slate-300">Loading…</p>;
 
   return (
-    <article className="space-y-4">
-      <h1 className="text-3xl font-bold text-white">{job.title}</h1>
-      <p className="text-slate-300">
+    <article className="space-y-5">
+      {/* Responsive title + meta */}
+      <h1 className="text-2xl sm:text-3xl font-bold text-white">{job.title}</h1>
+      <p className="text-sm sm:text-base text-slate-300">
         {[job.location || "Anywhere", job.remote ? "Remote" : null, job.type]
           .filter(Boolean)
           .join(" • ")}
       </p>
 
       {job.salary_min && job.salary_max && (
-        <p className="text-white/90">
-          <strong>Compensation:</strong> {(job.currency || "USD")} {job.salary_min}–{job.salary_max}
+        <p className="text-white/90 text-sm sm:text-base">
+          <strong>Compensation:</strong>{" "}
+          {(job.currency || "USD")} {job.salary_min}–{job.salary_max}
         </p>
       )}
 
-      <div className="card p-6">
+      {/* Description card stays light for readability */}
+      <div className="card p-5 sm:p-6">
         <div className="prose max-w-none text-black whitespace-pre-wrap">
           {job.description}
         </div>
       </div>
 
-      <div className="card p-6">
-        <h2 className="font-semibold text-lg text-black mb-2">Apply</h2>
+      {/* Apply card */}
+      <div className="card p-5 sm:p-6">
+        <h2 className="font-semibold text-lg text-black mb-3">Apply</h2>
         <ApplicationForm jobId={job.id} jobTitle={job.title} />
       </div>
     </article>
