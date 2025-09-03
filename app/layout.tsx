@@ -9,14 +9,20 @@ export const metadata = {
   description: "We place top tech talent. Fast.",
 };
 
+// ✅ This makes the page scale to the device width on phones
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      {/* Soft, clean background for the whole site */}
-      <body className="lenis-smooth antialiased min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white">
+      <body className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white">
         <Providers>
           <Nav />
-          <main className="container py-10">{children}</main>
+          <main className="container py-6 sm:py-10">{children}</main>
           <Footer />
         </Providers>
       </body>
