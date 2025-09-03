@@ -45,7 +45,8 @@ export default function JobsPage() {
 
   return (
     <section className="space-y-4">
-      <h1 className="text-3xl font-bold text-white">Open Roles</h1>
+      {/* Responsive heading */}
+      <h1 className="text-2xl sm:text-3xl font-bold text-white">Open Roles</h1>
 
       {loading && <p className="text-slate-300">Loading…</p>}
       {error && <p className="text-red-500">{error}</p>}
@@ -56,17 +57,26 @@ export default function JobsPage() {
         ) : (
           <ul className="divide-y divide-slate-700/40 bg-white/10 rounded-2xl backdrop-blur-sm">
             {jobs.map((j) => (
-              <li key={j.id} className="p-5 hover:bg-white/10 transition">
-                <Link href={`/jobs/${j.slug}`} className="flex items-center justify-between">
+              <li key={j.id} className="p-4 sm:p-5 hover:bg-white/10 transition">
+                <Link
+                  href={`/jobs/${j.slug}`}
+                  className="flex items-center justify-between gap-3"
+                  aria-label={`View job: ${j.title}`}
+                >
                   <div>
-                    <div className="font-semibold text-white">{j.title}</div>
-                    <div className="text-sm text-slate-300">
+                    {/* Title scales down a bit on small screens */}
+                    <div className="font-semibold text-white text-base sm:text-lg">
+                      {j.title}
+                    </div>
+                    <div className="text-sm sm:text-base text-slate-300">
                       {[j.location || "Anywhere", j.remote ? "Remote" : null, j.type]
                         .filter(Boolean)
                         .join(" • ")}
                     </div>
                   </div>
-                  <span className="text-slate-400">→</span>
+                  <span className="text-slate-400" aria-hidden>
+                    →
+                  </span>
                 </Link>
               </li>
             ))}
