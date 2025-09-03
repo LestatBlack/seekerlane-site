@@ -1,15 +1,15 @@
 // app/layout.tsx
-import "./globals.css"
-import Providers from "./providers"
-import Nav from "../components/Nav"
-import Footer from "../components/Footer"
+import "./globals.css";
+import Providers from "./providers";
+import Nav from "../components/Nav";
+import Footer from "../components/Footer";
 
 export const metadata = {
   title: "SeekerLane • Tech Recruitment",
   description: "We place top tech talent. Fast.",
 };
 
-// ✅ This makes the page scale to the device width on phones
+// ✅ Ensures proper mobile scaling
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -22,7 +22,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white">
         <Providers>
           <Nav />
-          <main className="container py-6 sm:py-10">{children}</main>
+          {/* Container keeps consistent page padding; extra top padding so content isn't under the sticky nav */}
+          <main className="container mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-12">
+            {children}
+          </main>
           <Footer />
         </Providers>
       </body>
