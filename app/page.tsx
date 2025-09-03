@@ -13,7 +13,7 @@ export default function HomePage() {
               SeekerLane
             </h1>
 
-            {/* Mobile tagline (visible on < lg) */}
+            {/* Mobile tagline */}
             <p className="lg:hidden text-base sm:text-lg text-slate-300">
               LatAm reach • US standards
             </p>
@@ -36,20 +36,24 @@ export default function HomePage() {
 
           {/* Right: image */}
           <div className="order-1 lg:order-2">
-            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl shadow-md">
-              {/* OPTIONAL: subtle gradient to improve text contrast */}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-black/0 to-black/10" />
+            {/* The wrapper has a gradient fallback so it never looks broken */}
+            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl shadow-md bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950">
+              {/* Optional subtle overlay for contrast */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-black/0 to-black/10" />
 
+              {/* LOCAL image in /public — change src if you used another name */}
               <Image
-                src="/hero.jpg" // 👈 replace with your actual image in /public
+                src="/hero.jpg"
                 alt="SeekerLane hero"
                 fill
                 priority
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
+                // If you use a remote URL instead of /public, you can add:
+                // unoptimized
               />
 
-              {/* Desktop-only badge */}
+              {/* Desktop-only floating badge */}
               <span className="hidden lg:block absolute top-4 left-4 rounded-full bg-white/85 backdrop-blur px-3 py-1 text-sm font-medium text-slate-900">
                 LatAm reach • US standards
               </span>
