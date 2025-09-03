@@ -43,7 +43,7 @@ export default function HomePage() {
 
               {/* LOCAL image in /public — change src if you used another name */}
               <Image
-                src="/hero.jpg"
+                src="/hero.png"
                 alt="SeekerLane hero"
                 fill
                 priority
