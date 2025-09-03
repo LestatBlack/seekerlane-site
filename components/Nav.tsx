@@ -1,21 +1,82 @@
-import Image from "next/image";
+// components/Nav.tsx
+"use client";
+
+import Link from "next/link";
+import { useState } from "react";
 
 export default function Nav() {
-  return (
-    <header className="sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-slate-200">
-      <div className="container flex items-center justify-between py-2 sm:py-3">
-        <a href="/" className="flex items-center gap-2 sm:gap-3">
-          {/* <Image src="/logo.svg" alt="SeekerLane" width={24} height={24} /> */}
-          <span className="text-lg sm:text-2xl font-bold text-brand-700">SeekerLane</span>
-        </a>
+  const [open, setOpen] = useState(false);
 
-        <nav className="flex items-center gap-3 sm:gap-5 text-sm sm:text-base">
-          <a className="nav-link" href="/about">About</a>
-          <a className="nav-link" href="/services">Services</a>
-          <a className="nav-link" href="/jobs">Jobs</a>
-          <a className="btn btn-primary px-4 py-2 sm:px-5 sm:py-3" href="/contact">Contact</a>
-        </nav>
-      </div>
+  return (
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-900/60 backdrop-blur supports-[backdrop-filter]:bg-slate-900/50">
+      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          {/* Brand */}
+          <Link href="/" className="text-xl font-semibold tracking-tight">
+            SeekerLane
+          </Link>
+
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-8">
+            <Link href="/about" className="hover:opacity-80">About</Link>
+            <Link href="/services" className="hover:opacity-80">Services</Link>
+            <Link href="/jobs" className="hover:opacity-80">Jobs</Link>
+            <Link
+              href="/contact"
+              className="rounded-xl px-4 py-2 font-medium bg-indigo-600 text-white hover:bg-indigo-700"
+            >
+              Contact
+            </Link>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            onClick={() => setOpen(v => !v)}
+            className="md:hidden rounded-md p-2 hover:bg-white/5"
+          >
+            {/* bars */}
+            <svg
+              className={`h-6 w-6 ${open ? "hidden" : "block"}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            {/* X */}
+            <svg
+              className={`h-6 w-6 ${open ? "block" : "hidden"}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile panel */}
+        {open && (
+          <div className="md:hidden pb-3">
+            <div className="mt-2 space-y-1 rounded-lg border border-white/10 bg-slate-900/90 p-2 shadow-lg">
+              <Link href="/about" className="block rounded-md px-3 py-2 hover:bg-white/5">About</Link>
+              <Link href="/services" className="block rounded-md px-3 py-2 hover:bg-white/5">Services</Link>
+              <Link href="/jobs" className="block rounded-md px-3 py-2 hover:bg-white/5">Jobs</Link>
+              <Link
+                href="/contact"
+                className="block rounded-md px-3 py-2 text-center bg-indigo-600 text-white hover:bg-indigo-700"
+              >
+                Contact
+              </Link>
+            </div>
+          </div>
+        )}
+      </nav>
     </header>
   );
 }
