@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
-import { SUPABASE_URL, SUPABASE_ANON } from "../../../lib/publicEnv"; // ✅ helper
+import { SUPABASE_URL, SUPABASE_ANON } from "../../../lib/publicEnv";
 import ApplicationForm from "../../../components/ApplicationForm";
 
 type Job = {
@@ -21,14 +21,13 @@ type Job = {
 };
 
 export default function JobPage() {
-  const params = useParams();
-  const slug = params?.slug as string;
+  const { slug } = useParams<{ slug: string }>();
   const [job, setJob] = useState<Job | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!SUPABASE_URL || !SUPABASE_ANON) {
-      setError("Site not configured: missing Supabase env vars.");
+      setError("Job board is temporarily unavailable.");
       return;
     }
 
@@ -52,10 +51,7 @@ export default function JobPage() {
 
   return (
     <article className="space-y-4">
-      {/* ✅ Job title: bright white for contrast */}
       <h1 className="text-3xl font-bold text-white">{job.title}</h1>
-
-      {/* ✅ Meta info: softer gray so still readable */}
       <p className="text-slate-300">
         {[job.location || "Anywhere", job.remote ? "Remote" : null, job.type]
           .filter(Boolean)
@@ -63,22 +59,19 @@ export default function JobPage() {
       </p>
 
       {job.salary_min && job.salary_max && (
-        <p className="text-slate-200">
-          <strong>Compensation:</strong>{" "}
-          {(job.currency || "USD")} {job.salary_min}–{job.salary_max}
+        <p className="text-white/90">
+          <strong>Compensation:</strong> {(job.currency || "USD")} {job.salary_min}–{job.salary_max}
         </p>
       )}
 
-      {/* ✅ Job description card: keep text dark on white background */}
       <div className="card p-6">
         <div className="prose max-w-none text-black whitespace-pre-wrap">
           {job.description}
         </div>
       </div>
 
-      {/* ✅ Apply form card: title white for consistency */}
       <div className="card p-6">
-        <h2 className="font-semibold text-lg text-white mb-2">Apply</h2>
+        <h2 className="font-semibold text-lg text-black mb-2">Apply</h2>
         <ApplicationForm jobId={job.id} jobTitle={job.title} />
       </div>
     </article>
