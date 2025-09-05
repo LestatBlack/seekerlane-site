@@ -18,11 +18,11 @@ export default function Nav() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/about" className="hover:opacity-80">About</Link>
-            <Link href="/services" className="hover:opacity-80">Services</Link>
+            <Link href="/#about" className="hover:opacity-80">About</Link>
+            <Link href="/#services" className="hover:opacity-80">Services</Link>
             <Link href="/jobs" className="hover:opacity-80">Jobs</Link>
             <Link
-              href="/contact"
+              href="/#contact"
               className="rounded-xl px-4 py-2 font-medium bg-indigo-600 text-white hover:bg-indigo-700"
             >
               Contact
@@ -64,11 +64,30 @@ export default function Nav() {
         {open && (
           <div className="md:hidden pb-3">
             <div className="mt-2 space-y-1 rounded-lg border border-white/10 bg-slate-900/90 p-2 shadow-lg">
-              <Link href="/about" className="block rounded-md px-3 py-2 hover:bg-white/5">About</Link>
-              <Link href="/services" className="block rounded-md px-3 py-2 hover:bg-white/5">Services</Link>
-              <Link href="/jobs" className="block rounded-md px-3 py-2 hover:bg-white/5">Jobs</Link>
               <Link
-                href="/contact"
+                href="/#about"
+                onClick={() => setOpen(false)}
+                className="block rounded-md px-3 py-2 hover:bg-white/5"
+              >
+                About
+              </Link>
+              <Link
+                href="/#services"
+                onClick={() => setOpen(false)}
+                className="block rounded-md px-3 py-2 hover:bg-white/5"
+              >
+                Services
+              </Link>
+              <Link
+                href="/jobs"
+                onClick={() => setOpen(false)}
+                className="block rounded-md px-3 py-2 hover:bg-white/5"
+              >
+                Jobs
+              </Link>
+              <Link
+                href="/#contact"
+                onClick={() => setOpen(false)}
                 className="block rounded-md px-3 py-2 text-center bg-indigo-600 text-white hover:bg-indigo-700"
               >
                 Contact
