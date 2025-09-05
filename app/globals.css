@@ -26,8 +26,9 @@ body { /* simple defaults */
 }
 
 /* ✅ New light button for contrast on dark backgrounds */
-.btn-light { @apply bg-white/90 text-slate-900 hover:bg-white shadow-sm border border-white/60; }
-
+.btn-light { 
+  @apply bg-white/90 text-slate-900 hover:bg-white shadow-sm border border-white/60; 
+}
 
 .card { 
   @apply rounded-2xl border border-slate-200 shadow-sm bg-white; 
@@ -37,7 +38,18 @@ body { /* simple defaults */
   @apply text-slate-700 hover:text-brand-700 transition; 
 }
 
-/* --- Lenis smooth scroll helpers --- */
+/* --- Smooth scroll --- */
+html {
+  scroll-behavior: smooth;
+}
+
+/* --- Sticky header offset --- */
+/* When scrolling to anchors, leave space so the sticky navbar doesn't overlap titles */
+[id] {
+  scroll-margin-top: 6rem; /* ~96px, adjust to your navbar height */
+}
+
+/* --- Lenis smooth scroll helpers (optional, if you add Lenis later) --- */
 html.lenis,
 .lenis.lenis-smooth {
   scroll-behavior: auto;
