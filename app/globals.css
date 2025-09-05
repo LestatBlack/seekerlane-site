@@ -40,7 +40,7 @@ body { /* simple defaults */
 
 /* --- Smooth scroll --- */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 /* --- Sticky header offset --- */
