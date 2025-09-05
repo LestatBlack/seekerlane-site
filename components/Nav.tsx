@@ -1,6 +1,7 @@
 // components/Nav.tsx
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -22,7 +23,7 @@ export default function Nav() {
               About
             </Link>
 
-            {/* Our Services button (replaces Services) */}
+            {/* Our Services (replaces Services) */}
             <Link
               href="/#services"
               className="rounded-xl px-4 py-2 font-medium bg-indigo-600 text-white hover:bg-indigo-700"
@@ -30,7 +31,7 @@ export default function Nav() {
               Our Services
             </Link>
 
-            {/* Browse Jobs button (replaces Jobs) */}
+            {/* Browse Jobs (replaces Jobs) */}
             <Link
               href="/jobs"
               className="rounded-xl px-4 py-2 font-medium bg-white/90 text-slate-900 hover:bg-white"
@@ -38,6 +39,66 @@ export default function Nav() {
               Browse Jobs
             </Link>
 
-            {/* Contact stays as a primary pill */}
+            {/* Contact */}
             <Link
-              href="/#c
+              href="/#contact"
+              className="rounded-xl px-4 py-2 font-medium bg-violet-600 text-white hover:bg-violet-700"
+            >
+              Contact
+            </Link>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            onClick={() => setOpen(v => !v)}
+            className="md:hidden rounded-md p-2 hover:bg-white/5"
+          >
+            {/* bars */}
+            <svg className={`h-6 w-6 ${open ? "hidden" : "block"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            {/* X */}
+            <svg className={`h-6 w-6 ${open ? "block" : "hidden"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile panel */}
+        {open && (
+          <div className="md:hidden pb-3">
+            <div className="mt-2 space-y-1 rounded-lg border border-white/10 bg-slate-900/90 p-2 shadow-lg">
+              <Link href="/#about" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2 hover:bg-white/5">
+                About
+              </Link>
+              <Link
+                href="/#services"
+                onClick={() => setOpen(false)}
+                className="block rounded-md px-3 py-2 bg-indigo-600 text-white hover:bg-indigo-700"
+              >
+                Our Services
+              </Link>
+              <Link
+                href="/jobs"
+                onClick={() => setOpen(false)}
+                className="block rounded-md px-3 py-2 bg-white/90 text-slate-900 hover:bg-white"
+              >
+                Browse Jobs
+              </Link>
+              <Link
+                href="/#contact"
+                onClick={() => setOpen(false)}
+                className="block rounded-md px-3 py-2 text-center bg-violet-600 text-white hover:bg-violet-700"
+              >
+                Contact
+              </Link>
+            </div>
+          </div>
+        )}
+      </nav>
+    </header>
+  );
+}
