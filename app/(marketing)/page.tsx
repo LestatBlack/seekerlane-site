@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic"; // bypass prerender at build
+
 export default function Page() {
   return (
     <main className="min-h-screen flex items-center justify-center p-8">
