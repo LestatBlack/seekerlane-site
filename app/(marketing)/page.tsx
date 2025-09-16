@@ -7,31 +7,14 @@
 
 \f0\fs24 \cf0 "use client";\
 \
-\
-import Header from "@/components/Header";\
-import Hero from "@/components/marketing/Hero";\
-import About from "@/components/About";\
-import Services from "@/components/Services";\
-import WhyHireUs from "@/components/WhyHireUs";\
-import Footer from "@/components/Footer";\
-import \{ useScrollAnimation \} from "@/hooks/useScrollAnimation";\
-\
-const Index = () => \{\
-  useScrollAnimation();\
-  \
+export default function Page() \{\
   return (\
-    <div className="min-h-screen bg-background">\
-      <Header />\
-      <main>\
-        <Hero />\
-        <About />\
-        <Services />\
-        <WhyHireUs />\
-      </main>\
-      <Footer />\
-    </div>\
+    <main className="min-h-screen flex items-center justify-center p-8">\
+      <div className="text-center space-y-2">\
+        <h1 className="text-3xl font-bold">Marketing Home</h1>\
+        <p>Replace this with your Lovable Index.tsx content.</p>\
+      </div>\
+    </main>\
   );\
-\};\
-\
-export default Index;\
+\}\
 }
