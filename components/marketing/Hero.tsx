@@ -49,13 +49,14 @@ const Hero = () => {
          >
   View opportunities
 </Link>
-
-            View opportunities
-          </Button>
-        </div>
-      </div>
-    </section>
-  );
-};
+            <Link
+  href="/jobs"
+  className={cn(
+    buttonVariants({ variant: "primary", size: "lg" }),
+    "border-accent/30 text-accent hover:bg-accent/10 transition-smooth px-8 py-4 text-base font-normal"
+  )}
+>
+  View opportunities
+</Link>
 
 export default Hero;
