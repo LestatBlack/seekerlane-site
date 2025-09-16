@@ -1,4 +1,6 @@
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import Link from "next/link"; // if this CTA navigates to a page
 
 const Hero = () => {
   return (
@@ -38,10 +40,16 @@ const Hero = () => {
         
         {/* CTA Button */}
         <div className="mt-12 animate-scale-in" style={{'animationDelay': '1s'} as any}>
-          <Button 
-            variant="primary"
-            className="border-accent/30 text-accent hover:bg-accent/10 transition-smooth px-8 py-4 text-base font-normal hover-lift hover-glow"
-          >
+         <Link
+         href="/jobs"
+         className={cn(
+         buttonVariants({ variant: "primary", size: "lg" }),
+         "border-accent/30 text-accent hover:bg-accent/10 transition-smooth px-8 py-4 text-base font-normal"
+         )}
+         >
+  View opportunities
+</Link>
+
             View opportunities
           </Button>
         </div>
