@@ -60,7 +60,7 @@ const Header = () => {
           {/* Contact Button & Mobile Menu */}
           <div className="flex items-center space-x-4">
             <Button 
-              variant="default"
+              variant="primary"
               className="bg-gradient-primary hover:shadow-glow transition-smooth shadow-soft"
             >
               Contact
