@@ -1,4 +1,4 @@
-// app/(marketing)/page.tsx
+// app/marketing/page.tsx
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
