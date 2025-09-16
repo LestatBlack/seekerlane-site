@@ -1,6 +1,14 @@
 {
   "compilerOptions": {
     "target": "ES2020",
+    "module": "ESNext",
+    "jsx": "preserve",
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",                            // 👈 add this
+    "paths": { "@/*": ["./*"] },              // 👈 and this
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true
     "lib": [
       "dom",
       "dom.iterable",
