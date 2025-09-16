@@ -1,4 +1,7 @@
-export { default } from "./marketing/page";
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
+export default function HomePage() {
+  return (
+    <main className="min-h-screen flex items-center justify-center">
+      <h1 className="text-4xl font-bold">Marketing Home</h1>
+    </main>
+  );
+}
