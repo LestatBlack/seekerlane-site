@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useState } from "react";
-import logoImage from "/seekerlane-logo.png";
+import Image from "next/image";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,10 +18,13 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <img 
-              src={logoImage} 
-              alt="SeekerLane Logo" 
-              className="w-10 h-10 object-contain"
+            <Image
+             src="/seekerlane-logo.png"   // the file must be in /public
+             alt="SeekerLane Logo"
+             width={40}
+             height={40}
+             className="w-10 h-10 object-contain"
+             priority
             />
             <div>
               <span className="text-2xl font-bold text-foreground">SeekerLane</span>
