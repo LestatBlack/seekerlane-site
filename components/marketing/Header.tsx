@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
@@ -59,13 +60,15 @@ const Header = () => {
 
           {/* Contact Button & Mobile Menu */}
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="primary"
-              className="bg-gradient-primary hover:shadow-glow transition-smooth shadow-soft"
+            <button
+            className={cn(
+            buttonVariants({ variant: "primary", size: "md" }),
+            "bg-gradient-primary hover:shadow-glow transition-smooth shadow-soft"
+            )}
             >
-              Contact
-            </Button>
-            
+            Contact
+           </button>
+
             {/* Mobile Menu Toggle */}
             <button
               className="md:hidden p-2"
