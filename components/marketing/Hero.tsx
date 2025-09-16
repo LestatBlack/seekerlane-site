@@ -40,7 +40,6 @@ const Hero = () => {
         <div className="mt-12 animate-scale-in" style={{'animationDelay': '1s'} as any}>
           <Button 
             variant="primary"
-            size="lg"
             className="border-accent/30 text-accent hover:bg-accent/10 transition-smooth px-8 py-4 text-base font-normal hover-lift hover-glow"
           >
             View opportunities
