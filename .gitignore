@@ -1,26 +1,27 @@
-# Next.js build files
-.next/
-out/
+# Env files
+.env
+.env.*
+!.env.example
 
-# Node libraries
-node_modules/
+# OS / Editor
+.DS_Store
+.vscode/
+
+# Vercel local data
+.vercel
 
 # Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.log
 
-# Environment files
-.env
-.env.*.local
-.env.local
+# Dependencies / build outputs
+node_modules/
+.next/
+.next/cache/
 
-# OS files
-.DS_Store
-
-# Ignore Next.js build output
-.next
-
-# Ignore dependencies
-node_modules
+# Optional common outputs
+out/
+dist/
